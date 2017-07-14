@@ -9,18 +9,20 @@ sf::Vector2f screenDimensions(900, 900);
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Particle Test");
+	printf("This is a program that simulates particles in a void\n\nUse the arrow keys to generate a traction in that particular direction\nUse R to restart the simulation.\nThe left mouse button generates a new explosion of particles.\n\nAuthor : Jacobus ALGERA");
+
+	sf::RenderWindow window(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Particle Test");	//Generates the window that will be used to display the particles
 
 	sf::Clock clock;
 
-	particleSystem particleSys(sf::Vector2f(screenDimensions.x/2, screenDimensions.y/2), 25000, 200);
+	particleSystem particleSys(sf::Vector2f(screenDimensions.x/2, screenDimensions.y/2), 20000, 200);
 	particleSys.initializeFormSpiral(400, 21, screenDimensions.x, screenDimensions.y);
 	window.display();
 
-	while (window.isOpen())
+	while (window.isOpen())															//Main loop
 	{
 		sf::Event evnt;
-		while (window.pollEvent(evnt))
+		while (window.pollEvent(evnt))												//Handles the events
 		{
 			if (evnt.type == sf::Event::Closed)
 			{
@@ -46,13 +48,12 @@ int main()
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 				{
-					//particleSys.initializeFormSpiral(200, 21, screenDimensions.x, screenDimensions.y);
-					particleSys.randomSpeedAndDirection(200,sf::Vector2f(screenDimensions.x/2, screenDimensions.y/2));
+					particleSys.initializeFormSpiral(400, 21, screenDimensions.x, screenDimensions.y);
 				}
 			}
 		}
 
-		sf::Time timePassed = clock.restart();
+		sf::Time timePassed = clock.restart();										//Used to keep track of the time thats passed during the simulation, which is then used to move each particle in accordance with its speed
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
@@ -61,7 +62,7 @@ int main()
 		}
 		else 
 		{
-			particleSys.update(timePassed, 20, window);
+			particleSys.update(timePassed, window);
 		}
 		window.clear();
 		particleSys.draw(window);

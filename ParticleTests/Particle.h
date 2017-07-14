@@ -1,6 +1,11 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 
+/*
+Class that handles each particle
+Each particle has its own speed and acceleration.
+*/
+
 class Particle
 {
 public:
@@ -21,7 +26,7 @@ public:
 	void addAcceleration(sf::Vector2f dAcceleration) { acceleration += dAcceleration; }
 
 private:
-	sf::Vector2f velocity;
+	sf::Vector2f velocity;										
 	sf::Vector2f acceleration;
 };
 
