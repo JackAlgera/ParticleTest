@@ -15,7 +15,7 @@ int main()
 
 	sf::Clock clock;
 
-	particleSystem particleSys(sf::Vector2f(screenDimensions.x/2, screenDimensions.y/2), 20000, 200);
+	particleSystem particleSys(sf::Vector2f(screenDimensions.x/2, screenDimensions.y/2), 15000, sf::Color::Green, 100, 0.5);
 	particleSys.initializeFormSpiral(400, 21, screenDimensions.x, screenDimensions.y);
 	window.display();
 
@@ -32,37 +32,38 @@ int main()
 			{
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				{
-					particleSys.increaseAcceleration(sf::Vector2f(0, -20));
+					particleSys.addForce(sf::Vector2f(0, -2000));
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 				{
-					particleSys.increaseAcceleration(sf::Vector2f(0, 20));
+					particleSys.addForce(sf::Vector2f(0, 2000));
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 				{
-					particleSys.increaseAcceleration(sf::Vector2f(20, 0));
+					particleSys.addForce(sf::Vector2f(2000, 0));
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 				{
-					particleSys.increaseAcceleration(sf::Vector2f(-20, 0));
+					particleSys.addForce(sf::Vector2f(-2000, 0));
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 				{
+					particleSys.setColor(sf::Color::Green);
 					particleSys.initializeFormSpiral(400, 21, screenDimensions.x, screenDimensions.y);
 				}
 			}
 		}
 
-		sf::Time timePassed = clock.restart();										//Used to keep track of the time thats passed during the simulation, which is then used to move each particle in accordance with its speed
+		float dt = clock.restart().asSeconds();										//Used to keep track of the time thats passed during the simulation, which is then used to move each particle in accordance with its speed
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			sf::Vector2f mousePos = (sf::Vector2f)sf::Mouse::getPosition(window);
-			particleSys.randomSpeedAndDirection(200, mousePos);
+			particleSys.randomSpeedAndDirection(400, mousePos, sf::Color::Green);
 		}
 		else 
 		{
-			particleSys.update(timePassed, window);
+			particleSys.update(dt, window, sf::Color::White);
 		}
 		window.clear();
 		particleSys.draw(window);

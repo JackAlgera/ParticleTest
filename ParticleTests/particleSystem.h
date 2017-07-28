@@ -10,21 +10,21 @@ VertexArray that is used to update each particle's position and to draw it onto 
 class particleSystem
 {
 public:
-	particleSystem(sf::Vector2f posInitial, int numberOfParticles, int maxSpeed);
+	particleSystem(sf::Vector2f posInitial, int numberOfParticles, sf::Color color, float mass, float coefOfFric);
 	~particleSystem();
 
-	void update(sf::Time timeTraveled, sf::RenderWindow& window);
-	void updateWithMouse(sf::Time timeTraveled, int frottement, sf::RenderWindow& window);
+	void update(float dt, sf::RenderWindow& window, sf::Color color);
 
 	void draw(sf::RenderWindow& window);
 	void mouseClick(sf::Vector2i mousePos);
-	void increaseAcceleration(sf::Vector2f dAcceleration);
+	void addForce(sf::Vector2f dForce);
 
 	void initializeFormSpiral(float rayon, int dAngle, int windowWidth, int windowHeight);
-	void randomSpeedAndDirection(int maxSpeed, sf::Vector2f initialPosition);
+	void randomSpeedAndDirection(int maxSpeed, sf::Vector2f initialPosition, sf::Color color);
+	void setColor(sf::Color color);
 
 private:
-	void updatePosition(int indewx, int windowWidth, int windowHeight, sf::Time timeTraveled);
+	void updateVelocity(int indewx, int windowWidth, int windowHeight, float dt, sf::Color color);
 
 private:
 	sf::VertexArray vertexParticles;
