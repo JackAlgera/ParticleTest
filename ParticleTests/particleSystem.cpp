@@ -2,8 +2,10 @@
 
 
 
-particleSystem::particleSystem(sf::Vector2f posInitial, int numberOfParticles, sf::Color color, float mass, float coefOfFric)		
+particleSystem::particleSystem(sf::Vector2f posInitial, int numberOfParticles, sf::Color color, float mass, float coefOfFric, bool reboundOnEdges)
 {
+	this->reboundOnEdges = reboundOnEdges;
+	posInit = posInitial;
 	vertexParticles = sf::VertexArray(sf::Points, numberOfParticles);
 	for (int i = 0; i < numberOfParticles; i++)
 	{
@@ -52,7 +54,7 @@ void particleSystem::addForce(sf::Vector2f dForce)	//Increase the acceleration o
 	}
 }
 
-void particleSystem::initializeFormSpiral(float rayon, int dAngle, int windowWidth, int windowHeight)	//Initialized the particle system with a spiral
+void particleSystem::initializeFormSpiral(float rayon, int dAngle)	//Initialized the particle system with a spiral
 {
 	float angle = 0;
 	float dr = rayon / ((float)vectorParticles.size());
@@ -60,7 +62,7 @@ void particleSystem::initializeFormSpiral(float rayon, int dAngle, int windowWid
 
 	for (int i = 0; i < vectorParticles.size(); i++)													//gives each particle a position on the spiral
 	{
-		vectorParticles[i].position = sf::Vector2f(windowWidth / 2 + cos(angle)*r, windowHeight / 2 + sin(angle)*r);
+		vectorParticles[i].position = sf::Vector2f(posInit.x + cos(angle)*r, posInit.y + sin(angle)*r);
 		vertexParticles[i].position = vectorParticles[i].position;
 		vectorParticles[i].velocity = sf::Vector2f(0, 0);
 		r += dr;
@@ -98,30 +100,55 @@ void particleSystem::updateVelocity(int index, int windowWidth, int windowHeight
 	float Xparticle = position.x;
 	float Yparticle = position.y;
 
-	if ((Xparticle > 0) && (Xparticle < windowWidth))
+	if (reboundOnEdges)
 	{
-		if ((Yparticle <= 0) | (Yparticle >= windowHeight))
+		if ((Xparticle > 0) && (Xparticle < windowWidth))
 		{
+			if (Yparticle <= 0)
+			{
+				if (vectorParticles[index].velocity.y < 0)
+				{
+					vectorParticles[index].velocity.y = -vectorParticles[index].velocity.y;
+					vertexParticles[index].color = color;
+				}
+			}
+
+			if (Yparticle >= windowHeight)
+			{
+				if (vectorParticles[index].velocity.y > 0)
+				{
+					vectorParticles[index].velocity.y = -vectorParticles[index].velocity.y;
+					vertexParticles[index].color = color;
+				}
+			}
+		}
+
+		if ((Yparticle > 0) && (Yparticle < windowHeight))
+		{
+			if (Xparticle <= 0)
+			{
+				if (vectorParticles[index].velocity.x < 0)
+				{
+					vectorParticles[index].velocity.x = -vectorParticles[index].velocity.x;
+					vertexParticles[index].color = color;
+				}
+			}
+
+			if (Xparticle >= windowWidth)
+			{
+				if (vectorParticles[index].velocity.x > 0)
+				{
+					vectorParticles[index].velocity.x = -vectorParticles[index].velocity.x;
+					vertexParticles[index].color = color;
+				}
+			}
+		}
+		else if ((Xparticle <= 0 && Yparticle <= 0) | (Xparticle <= 0 && Yparticle >= windowHeight) | (Xparticle >= windowWidth && Yparticle >= windowWidth) | (Xparticle >= windowWidth && Yparticle <= 0))
+		{
+			Particle actualParticle = vectorParticles[index];
+			vectorParticles[index].velocity.x = -vectorParticles[index].velocity.x;
 			vectorParticles[index].velocity.y = -vectorParticles[index].velocity.y;
 			vertexParticles[index].color = color;
 		}
 	}
-
-	if ((Yparticle > 0) && (Yparticle < windowHeight))
-	{
-		if ((Xparticle <= 0) | (Xparticle >= windowWidth))
-		{
-			vectorParticles[index].velocity.x = -vectorParticles[index].velocity.x;
-			vertexParticles[index].color = color;
-		}
-	}
-	else if ((Xparticle <= 0 && Yparticle <= 0) | (Xparticle <= 0 && Yparticle >= windowHeight) | (Xparticle >= windowWidth && Yparticle >= windowWidth) | (Xparticle >= windowWidth && Yparticle <= 0))
-	{
-		Particle actualParticle = vectorParticles[index];
-		vectorParticles[index].velocity.x = -vectorParticles[index].velocity.x;
-		vectorParticles[index].velocity.y = -vectorParticles[index].velocity.y;
-		vertexParticles[index].color = color;
-	}
-	
-
 }
