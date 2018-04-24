@@ -9,7 +9,7 @@ sf::Vector2f screenDimensions(1000, 900);
 float const nbrParticlesPerThread = 4000;
 bool reboundOnEdges = true;
 
-sf::Color randomColor(int val);
+sf::Color randomColor();
 
 std::vector<particleSystem> particleThreads;
 
@@ -106,7 +106,7 @@ int main()
 				{
 					sf::Vector2f mousePos = (sf::Vector2f)sf::Mouse::getPosition(window);
 					particleSys = particleSystem(mousePos, nbrParticlesPerThread, sf::Color::Red, 100, 0.5, reboundOnEdges);
-					particleSys.randomSpeedAndDirection(200, mousePos, randomColor(particleThreads.size() % 3));
+					particleSys.randomSpeedAndDirection(200, mousePos, randomColor());
 					particleThreads.push_back(particleSys);
 				}
 			}
@@ -115,9 +115,9 @@ int main()
 		float dt = clock.restart().asSeconds();										//Used to keep track of the time thats passed during the simulation, which is then used to move each particle in accordance with its speed
 
 		window.clear();
-		if (particleThreads.size() >= 7)
+		if (particleThreads.size() >= 10)
 		{
-			particleThreads.erase(particleThreads.begin() + 0, particleThreads.begin() + 3);
+			particleThreads.erase(particleThreads.begin() + 0, particleThreads.begin() + 1);
 		}
 		for (int i = 0; i < particleThreads.size(); i++)
 		{
@@ -130,19 +130,41 @@ int main()
 	}
 }
 
-sf::Color randomColor(int val)
+sf::Color randomColor()
 {
-	//int val = rand() % 3;
-	if (val == 0)
+	static int val = 0;
+
+	if (val < 6)
 	{
-		return sf::Color::Red;
-	}
-	if (val == 1)
-	{
-		return sf::Color::Green;
+		val++;
 	}
 	else
 	{
-		return sf::Color::Blue;
+		val = 0;
+	}
+
+	switch (val)
+	{
+	case 0:
+		return sf::Color(255, 0, 0);
+		break;
+	case 1:
+		return sf::Color(0, 255, 0);
+		break;
+	case 2:
+		return sf::Color(0, 0, 255);
+		break;
+	case 3:
+		return sf::Color(255, 0, 255);
+		break;
+	case 4:
+		return sf::Color(255, 255, 0);
+		break;
+	case 5:
+		return sf::Color(0, 255, 255);
+		break;
+	case 6:
+		return sf::Color(255, 255, 255);
+		break;
 	}
 }
